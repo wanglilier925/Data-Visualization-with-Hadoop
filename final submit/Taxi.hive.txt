@@ -1,0 +1,22 @@
+create table temp_flights(tf string);
+LOAD DATA INPATH '/user/maria_dev/wholeEnchilada.csv' OVERWRITE INTO TABLE temp_flights;
+
+
+
+CREATE TABLE flights (origin STRING, UniqueCarrier STRING, TaxiIn STRING, TaxiOut STRING);
+insert overwrite table flights
+SELECT 
+     regexp_extract(tf, '^(?:([^,]*),?){17}', 1) origin,
+     regexp_extract(tf, '^(?:([^,]*),?){9}', 1) carrier,
+     regexp_extract(tf, '^(?:([^,]*),?){20}', 1) taxiIn,
+     regexp_extract(tf, '^(?:([^,]*),?){21}', 1) taxiIOut
+from temp_flights;
+
+
+
+select JD.airline as airlineorigin, MIN(JD.taxiTime)as mintaxi, MAX(JD.taxiTime) as maxtaxi, AVG(JD.taxiTime) as avgtaxi
+from (select CONCAT(flights.uniquecarrier,'-',flights.origin) as airline, (flights.taxiin+flights.taxiOut) as taxiTime from flights where taxiin<> 'NA' and taxiout<>'NA')JD
+
+group by JD.airline;
+
+

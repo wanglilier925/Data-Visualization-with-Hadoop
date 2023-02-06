@@ -1,0 +1,5 @@
+hadoop jar /usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar -file ./taxiMapper.py -mapper 'python taxiMapper.py' -file ./taxiReducer.py -reducer 'python taxiReducer.py' -input /user/maria_dev/testNA.csv -output /user/maria_dev/taxiMapReduceResult
+hadoop fs -ls /user/maria_dev     
+
+hadoop fs -cat taxitest45/part-00000
+                                                                                                      
