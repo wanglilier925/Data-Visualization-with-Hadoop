@@ -1,0 +1,5 @@
+flights = load '2008.csv' using PigStorage(',');
+flight_details = FOREACH flights GENERATE $3 as dayOfWeek, (int)$15 AS depDelay;
+grp_day = GROUP flight_details by dayOfWeek;
+aveDepDelay= foreach grp_day generate group, AVG(flight_details.depDelay);
+store aveDepDelay into 'aveDepDelayByDayOfWeekPigResults';
